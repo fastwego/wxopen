@@ -32,9 +32,6 @@ func main() {
 	flag.StringVar(&pkgFlag, "package", "default", "")
 	flag.Parse()
 	for _, group := range apiConfig {
-		if group.Package == "auth" || group.Package == "account" {
-			continue
-		}
 
 		if group.Package == pkgFlag {
 			build(group)
