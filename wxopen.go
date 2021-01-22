@@ -118,6 +118,9 @@ func NewPlatform(config PlatformConfig) (platform *Platform) {
 func (platform *Platform) NewOffiAccount(appid string) (offiAccount *offiaccount.OffiAccount, err error) {
 	offiAccount = offiaccount.New(offiaccount.Config{
 		Appid: appid,
+		Secret: "",
+		Token: platform.Config.Token,
+		EncodingAESKey: platform.Config.AesKey,
 	})
 
 	offiAccount.AccessToken.GetAccessTokenHandler = func(ctx *offiaccount.OffiAccount) (accessToken string, err error) {
@@ -137,6 +140,7 @@ func (platform *Platform) NewOffiAccount(appid string) (offiAccount *offiaccount
 func (platform *Platform) NewMiniprogram(appid string) (mini *miniprogram.Miniprogram, err error) {
 	mini = miniprogram.New(miniprogram.Config{
 		Appid: appid,
+		Secret: "",
 	})
 
 	mini.AccessToken.GetAccessTokenHandler = func(ctx *miniprogram.Miniprogram) (accessToken string, err error) {
@@ -358,7 +362,7 @@ func refreshComponentAccessToken(appid string, secret string, ticket string) (ac
 
 // GetComponentVerifyTicket 获取 component_verify_ticket
 func GetComponentVerifyTicket(platform *Platform) (appTicket string, err error) {
-	appTicket, err = platform.Cache.Fetch("component_verify_ticket :" + platform.Config.AppId)
+	appTicket, err = platform.Cache.Fetch("component_verify_ticket:" + platform.Config.AppId)
 	if appTicket != "" {
 		return
 	}
@@ -368,5 +372,5 @@ func GetComponentVerifyTicket(platform *Platform) (appTicket string, err error) 
 
 // ReceiveComponentVerifyTicket 接收 component_verify_ticket
 func ReceiveComponentVerifyTicket(platform *Platform, ticket string) (err error) {
-	return platform.Cache.Save("component_verify_ticket :"+platform.Config.AppId, ticket, 0)
+	return platform.Cache.Save("component_verify_ticket:"+platform.Config.AppId, ticket, 0)
 }
